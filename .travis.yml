@@ -10,7 +10,7 @@ deploy:
   provider: lambda
   function_name: GoldenHour
   role: arn:aws:iam::856841379672:role/service-role/GoldenHour
-  handler_name: index.handler
+  handler_name: index
   runtime: nodejs6.10
   access_key_id: AKIAJZE2JYA2JDEQBMXQ
   secret_access_key:
