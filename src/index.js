@@ -18,6 +18,9 @@ var STOP_MESSAGE = "Goodbye!";
 //Editing anything below this line might break your skill.  
 //=========================================================================================================================================
 exports.handler = function(event, context, callback) {
+    console.log("Starting Golden Hour Skill");
+    console.log("EVENT: ", event);
+    console.log("CONTEXT: ", context);
     var alexa = Alexa.handler(event, context);
     deviceId = context.System.device.deviceId;
     consentToken = context.System.user.permissions.consentToken;
@@ -66,6 +69,7 @@ var handlers = {
 };
 
 function getZipcode(deviceId, consentToken) {
+    console.log("GETTING ZIPCODE: " + deviceId + " | " + consentToken)
     const options = {
         uri: 'https://api.amazonalexa.com/v1/devices/' + deviceId + '/settings/address/countryAndPostalCode',
         headers: {
@@ -77,15 +81,16 @@ function getZipcode(deviceId, consentToken) {
 }
 
 function getGoldenHourResponse(zipcode) {
+    console.log("Getting golden hour responses for " + zipcode)
     const goldenHour = new GoldenHourCalc(zipcode)
-        const location = goldenHour.location
-        const morning = goldenHour.goldenHourMorning()
-        const evening = goldenHour.goldenHourEvening()
-        const morningResponse = "The next morning golden hour will start at " + morning.start + " and end at " + morning.end + ". ";
-        const eveningResponse = "The next evening golden hour will start at " + evening.start + " and end at " + evening.end + ".";
-        return {
-            morningResponse: morningResponse,
-            eveningResponse: eveningResponse,
-            combinedResponses: morningResponse + eveningResponse
-        }
+    const location = goldenHour.location
+    const morning = goldenHour.goldenHourMorning()
+    const evening = goldenHour.goldenHourEvening()
+    const morningResponse = "The next morning golden hour will start at " + morning.start + " and end at " + morning.end + ". ";
+    const eveningResponse = "The next evening golden hour will start at " + evening.start + " and end at " + evening.end + ".";
+    return {
+        morningResponse: morningResponse,
+        eveningResponse: eveningResponse,
+        combinedResponses: morningResponse + eveningResponse
+    }
 }
