@@ -6,6 +6,8 @@ const GoldenHourCalc = require('js-golden-hour');
 const request = require('request-promise-native')
 
 var zipcode;
+var consentToken;
+var deviceId;
 
 var AlexaGoldenHour = function (callback) {
     this.callback = callback;
@@ -38,8 +40,16 @@ AlexaGoldenHour.prototype.eventHandlers.onSessionEnded = function (sessionEndedR
 AlexaGoldenHour.prototype.intentHandlers = {
     // register custom intent handlers
     "GetGoldenHourIntent": function (intent, session, response) {        
-        const responses = getGoldenHourResponse(zipcode)
-        response.tell(responses.combinedResponses)       
+        getZipcode(deviceId, consentToken).then(function(data) {
+            zipcode = data.postalCode;            
+            const responses = getGoldenHourResponse(zipcode)
+            response.tell(responses.combinedResponses)       
+        })
+        .catch(function(err){
+            console.log(err);
+            response.tell("I'm sorry, I require access to your location to use that functionality. Please allow access to location in the Alexa app.")
+        })
+        
     },
     'GetGoldenHourForZipIntent': function(intent, session, response) {
         var spokenZip = intent.slots.Zipcode.value;
@@ -65,12 +75,9 @@ AlexaGoldenHour.prototype.intentHandlers = {
  
 function processEvent(event, context, callback) {
     var AlexaGoldenHour = new AlexaGoldenHour();
-    const deviceId = context.System.device.deviceId;
-    const consentToken = context.System.user.permissions.consentToken;
-    getZipcode(deviceId, consentToken).then(function(data) {
-        zipcode = data.postalCode;
-        AlexaGoldenHour.execute(event, context);
-    })    
+    deviceId = context.System.device.deviceId;
+    consentToken = context.System.user.permissions.consentToken;
+    AlexaGoldenHour.execute(event, context);
 }
 
 function getZipcode(deviceId, consentToken) {
