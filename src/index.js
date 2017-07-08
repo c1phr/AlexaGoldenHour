@@ -1,44 +1,35 @@
 'use strict';
-var AWS = require('aws-sdk');
-var AlexaSkill = require('./AlexaSkill.js');
-const APP_ID = process.env['app_id'];
+var Alexa = require('alexa-sdk');
 const GoldenHourCalc = require('js-golden-hour');
-const request = require('request-promise-native')
+const request = require('request-promise-native');
 
+var APP_ID = process.env['app_id'];
 var zipcode;
 var consentToken;
 var deviceId;
 
-var AlexaGoldenHour = function (callback) {
-    this.callback = callback;
-    AlexaSkill.call(this, APP_ID);
+var SKILL_NAME = "Golden Hour";
+var GET_FACT_MESSAGE = "Here's your fact: ";
+var HELP_MESSAGE = "You can say tell me a space fact, or, you can say exit... What can I help you with?";
+var HELP_REPROMPT = "What can I help you with?";
+var STOP_MESSAGE = "Goodbye!";
+
+//=========================================================================================================================================
+//Editing anything below this line might break your skill.  
+//=========================================================================================================================================
+exports.handler = function(event, context, callback) {
+    var alexa = Alexa.handler(event, context);
+    deviceId = context.System.device.deviceId;
+    consentToken = context.System.user.permissions.consentToken;
+    alexa.APP_ID = APP_ID;
+    alexa.registerHandlers(handlers);
+    alexa.execute();
 };
 
-// Extend AlexaSkill
-AlexaGoldenHour.prototype = Object.create(AlexaSkill.prototype);
-AlexaGoldenHour.prototype.constructor = AlexaGoldenHour;
-
-AlexaGoldenHour.prototype.eventHandlers.onSessionStarted = function (sessionStartedRequest, session) {
-    console.log("AlexaGoldenHour onSessionStarted requestId: " + sessionStartedRequest.requestId
-        + ", sessionId: " + session.sessionId);
-    // any initialization logic goes here
-};
-
-AlexaGoldenHour.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
-    console.log("AlexaGoldenHour onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
-    var speechOutput = "Which bus and stop would you like to know about?";
-    var repromptText = "Ask about a Boston area bus";
-    response.ask(speechOutput, repromptText);
-};
-
-AlexaGoldenHour.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest, session) {
-    console.log("AlexaGoldenHour onSessionEnded requestId: " + sessionEndedRequest.requestId
-        + ", sessionId: " + session.sessionId);
-    // any cleanup logic goes here
-};
-
-AlexaGoldenHour.prototype.intentHandlers = {
-    // register custom intent handlers
+var handlers = {
+    'LaunchRequest': function () {
+        this.emit('GetGoldenHourIntent');
+    },
     "GetGoldenHourIntent": function (intent, session, response) {        
         getZipcode(deviceId, consentToken).then(function(data) {
             zipcode = data.postalCode;            
@@ -61,27 +52,18 @@ AlexaGoldenHour.prototype.intentHandlers = {
         const responses = getGoldenHourResponse(zipcode)
         response.tell(responses.combinedResponses)
     },
-    "AMAZON.HelpIntent": function (intent, session, response) {
-        response.ask("I can tell you what time the next golden hour will be in your location.");
+    'AMAZON.HelpIntent': function () {
+        var speechOutput = HELP_MESSAGE;
+        var reprompt = HELP_REPROMPT;
+        this.emit(':ask', speechOutput, reprompt);
     },
-    "AMAZON.StopIntent": function(intent, session, response) {
-        response.cancel();
+    'AMAZON.CancelIntent': function () {
+        this.emit(':tell', STOP_MESSAGE);
     },
-    "AMAZON.CancelIntent": function(intent, session, response) {
-        response.cancel();
-    },
-    "AMAZON.NoIntent": function(intent, session, response) {
-        response.cancel();
+    'AMAZON.StopIntent': function () {
+        this.emit(':tell', STOP_MESSAGE);
     }
-}; 
- 
-function processEvent(event, context, callback) {
-    console.log("Processing event with context " + context)
-    var AlexaGoldenHour = new AlexaGoldenHour();
-    deviceId = context.System.device.deviceId;
-    consentToken = context.System.user.permissions.consentToken;
-    AlexaGoldenHour.execute(event, context);
-}
+};
 
 function getZipcode(deviceId, consentToken) {
     const options = {
@@ -107,7 +89,3 @@ function getGoldenHourResponse(zipcode) {
             combinedResponses: morningResponse + eveningResponse
         }
 }
-
-exports.handler = (event, context, callback) => {
-    processEvent(event, context, callback);   
-};
