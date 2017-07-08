@@ -1,0 +1,17 @@
+GetGoldenHourIntent when is the next golden hour
+GetGoldenHourIntent what time is the next golden hour
+GetGoldenHourIntent when is golden hour
+GetGoldenHourIntent when I should take photos
+GetGoldenHourIntent when should I take photos
+
+GetGoldenHourForZipIntent when is the next golden hour in {Zipcode}
+GetGoldenHourForZipIntent what time is the next golden hour in {Zipcode}
+GetGoldenHourForZipIntent when is golden hour in {Zipcode}
+GetGoldenHourForZipIntent when I should take photos in {Zipcode}
+GetGoldenHourForZipIntent when should I take photos in {Zipcode}
+
+GetGoldenHourForZipIntent when is the next golden hour at {Zipcode}
+GetGoldenHourForZipIntent what time is the next golden hour at {Zipcode}
+GetGoldenHourForZipIntent when is golden hour at {Zipcode}
+GetGoldenHourForZipIntent when I should take photos at {Zipcode}
+GetGoldenHourForZipIntent when should I take photos at {Zipcode}

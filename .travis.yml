@@ -1,0 +1,23 @@
+language: node_js
+node_js: "6"
+
+notifications:
+  email: false
+
+before_script: 
+  - cd src
+  - npm install
+script: npm test
+
+deploy:
+  provider: lambda
+  function_name: GoldenHour
+  role: arn:aws:iam::856841379672:role/service-role/GoldenHour
+  handler_name: index.handler
+  runtime: nodejs6.10
+  access_key_id: AKIAJ5KSMP6VNXFNT66A
+  secret_access_key:
+    secure: LyDj5BBNX7pXwiFd2FZteSL8Ks0bnqNXQLXPeVWLjjcceuBV5NRRe8JunjBN0IjdCA2l5GQgJ9a1U/Q4Xs/RzZpZRWNmtqiMtuapO/ZbfMhbzYsVcK+1xNKBsW/ugUT+UaDgGV9jENp6rFwTgVh4Tf6kEy8Rlqp4H/+kSAN/+asWkJXtnT3Zxy1HOaOoJtEks5HvSod2nWbT9OpHtPbgbV8WNXSdyarqEaTrvuQvHTX3Jfefrv5MUL3+O+sSj+jX5UP0J54Hav7/CzTRDKMOz3lCjOBA+BF7mJ1NE/sEKU97a/fU0I3oyTCU1Z2e1JEnVC+tYGRDiNZQqFVochp/kMg88X1t0VnqK392D5YFmI10uPph0IzG5WBSzgDBbkr9XyfBcMuroWW1CruXh98VQQzxuMD+pJ0N/F8SJGhhRROVdYPeukGv8BDcojmexbfN+UX5tX/NthK5IsUbtB5klUsBXjOeirvrRpPHAPsLAeU5WyL2GbRDBYtdeozlzV5eiuM7hcx/ruYqJwcr8HHmCANz4auS/0y9S66eK7QhqBHcKV0vkQ+OiiByNGVZgJnrnXwTMm7vR/a4pNbwDndQt6wSBOgWS3sR2c/uwuRtpfMMAlgjZO8pt6dCYPAsh2VKXofZZdOxvdqc07hrZ5Jffou/h0uM+SduGPGXg7RQsKs=
+env:  
+  global:
+    secure: jkphuhLr4Doxln16DHUudJY8ckTFVV/fnh0tDg0zfag5Na5jPyRh1spsSuXw2q1LRXUA6d9xUhqPttemZOEp2t+boo0atCGZRqSnVtceOw++wo7O1FEahhjHKecseIV68bWjP4hjopI+45Ss62jxx90SwcKEiAi+b8W0lKa5wS9dcJSxKa93ehvD4vAxr6N66QBjM2mjhdKY74k/rElcXLx990P14/49aNHhqt4wwO31QiSX7wsr87zIQEs8rXr38PQOhLH7WkkzHSGCpvBR7cBwo/8UoRL9iiD1I5ZF/2qKM+8LV+KL4PH/IG5j0J1vw2/XIWvWcrCvu9/OUIdDLGEFiDKpN1X2TpeF0q4fnCvfkj6Ipxs2gx8bA+EzAWoBLBqTJA6ycVrntdQfXjbaMP8grZ7vEUCM+ioiTNubjvm4JFM4Q8PlhPYM5nNdvMKMoTHEVHuoX994fGv1yKfO3aFR0V2r24BMHOjb30A5QwHuHjiUowKHP7pBNe2a3DLJand8xS+2ilv6GQ0V6Dl8bPKZonltYW6rVo++lbr8XGPug7k1kZmfharUHQ6KFbTgMmVzaFwYKeHNR2uKVg3G5AIiwc4dCb44aSn4AdXJahRznnqnkAQ+KET27bu3jdanXdDDV0A3xLwDSpAKFK3NdXmQ+lgjr3UxMTP2tm7f2ZA=
