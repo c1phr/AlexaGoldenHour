@@ -42,6 +42,7 @@ AlexaGoldenHour.prototype.intentHandlers = {
     "GetGoldenHourIntent": function (intent, session, response) {        
         getZipcode(deviceId, consentToken).then(function(data) {
             zipcode = data.postalCode;            
+            console.log("Getting golden hour for zipcode: " + zipcode)
             const responses = getGoldenHourResponse(zipcode)
             response.tell(responses.combinedResponses)       
         })
@@ -53,6 +54,7 @@ AlexaGoldenHour.prototype.intentHandlers = {
     },
     'GetGoldenHourForZipIntent': function(intent, session, response) {
         var spokenZip = intent.slots.Zipcode.value;
+        console.log("Getting golden hour for spoken zip: " + spokenZip)
         if (spokenZip === undefined) {
             spokenZip = zipcode
         }
@@ -74,6 +76,7 @@ AlexaGoldenHour.prototype.intentHandlers = {
 }; 
  
 function processEvent(event, context, callback) {
+    console.log("Processing event with context " + context)
     var AlexaGoldenHour = new AlexaGoldenHour();
     deviceId = context.System.device.deviceId;
     consentToken = context.System.user.permissions.consentToken;
@@ -88,7 +91,7 @@ function getZipcode(deviceId, consentToken) {
             'Accept': 'application/json'
         }
     }
-    return request(opts);    
+    return request(options);    
 }
 
 function getGoldenHourResponse(zipcode) {
