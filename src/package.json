@@ -4,6 +4,7 @@
   "description": "AWS Lambda function to get Photographic Golden Hour",
   "main": "index.js",
   "dependencies": {
+    "alexa-sdk": "^1.0.6",
     "aws-sdk": "^2.7.13",
     "js-golden-hour": "1.0.1",
     "request": "^2.79.0",
