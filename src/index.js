@@ -4,8 +4,8 @@ const GoldenHourCalc = require('js-golden-hour');
 const request = require('request-promise-native');
 var APP_ID = process.env['app_id'];
 var zipcode = "02151";
-var consentToken;
-var deviceId;
+var consentToken = null;
+var deviceId = null;
 
 const SKILL_NAME = "Golden Hour";
 const GET_FACT_MESSAGE = "Here's your fact: ";
@@ -66,7 +66,7 @@ var handlers = {
         this.emit('GetGoldenHourIntent');
     },
     "GetGoldenHourIntent": function () {
-        if (!!deviceId || !!consentToken) {
+        if (deviceId === null || consentToken === null) {
             response.tell("I'm sorry, I require access to your location to use that functionality. Please allow access to location in the Alexa app.")
             return
         }
