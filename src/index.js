@@ -53,9 +53,9 @@ exports.handler = function(event, context, callback) {
     console.log("EVENT: ", event);
     console.log("CONTEXT: ", context);
     var alexa = Alexa.handler(event, context);
-    if (context.System) {
-        deviceId = context.System.device.deviceId;
-        consentToken = context.System.user.permissions.consentToken;
+    if (event.context.System) {
+        deviceId = event.context.System.device.deviceId;
+        consentToken = event.context.System.user.permissions.consentToken;
     }    
     alexa.APP_ID = APP_ID;
     alexa.registerHandlers(handlers);
