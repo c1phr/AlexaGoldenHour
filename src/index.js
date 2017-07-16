@@ -3,13 +3,14 @@ var Alexa = require('alexa-sdk');
 const GoldenHourCalc = require('js-golden-hour');
 const request = require('request-promise-native');
 var APP_ID = process.env['app_id'];
-var zipcode = "02151";
+var zipcode;
 var consentToken = null;
 var deviceId = null;
 
 const SKILL_NAME = "Golden Hour";
 const GET_FACT_MESSAGE = "Here's your fact: ";
-const LOCATION_ERROR_MESSAGE = "I'm sorry, I require access to your location to use that functionality. Please allow access to location in the Alexa app."
+const PERMISSION_ERROR_MESSAGE = "I'm sorry, I require access to your location to use that functionality. Please allow access to location in the Alexa app."
+const LOCATION_ERROR_MESSAGE = "I'm sorry, I was unable to get your location."
 const HELP_MESSAGE = "You can say tell me a space fact, or, you can say exit... What can I help you with?";
 const HELP_REPROMPT = "What can I help you with?";
 const STOP_MESSAGE = "Goodbye!";
@@ -22,6 +23,7 @@ var getGoldenHourResponse = function(zipcode) {
     console.log("Getting golden hour responses for " + zipcode)
     const goldenHour = new GoldenHourCalc(zipcode)
     const location = goldenHour.location
+    const locationString = "In " + location + ". "
     const morning = goldenHour.goldenHourMorning()
     const evening = goldenHour.goldenHourEvening()
     const morningResponse = "The next morning golden hour will start at " + morning.start.format('h:mm a') + " and end at " + morning.end.format('h:mm a') + ". ";
@@ -29,7 +31,7 @@ var getGoldenHourResponse = function(zipcode) {
     return {
         morningResponse: morningResponse,
         eveningResponse: eveningResponse,
-        combinedResponses: morningResponse + eveningResponse
+        combinedResponses: locationString + morningResponse + eveningResponse
     }
 }
 
@@ -43,9 +45,7 @@ var getZipcode = function(deviceId, consentToken) {
             'Accept': 'application/json'
         }
     }
-    return request(options).then(function(data){
-        return data.postalCode
-    })    
+    return request(options)
 }
 
 exports.handler = function(event, context, callback) {
@@ -67,19 +67,23 @@ var handlers = {
         this.emit('GetGoldenHourIntent');
     },
     "GetGoldenHourIntent": function () {
+        const alexaHandler = this
         if (deviceId === null || consentToken === null) {
-            this.emit(':tell', LOCATION_ERROR_MESSAGE)
+            alexaHandler.emit(':tell', PERMISSION_ERROR_MESSAGE)
             return
         }
-        return getZipcode(deviceId, consentToken).then(function(zipcode) { 
+        
+        return getZipcode(deviceId, consentToken).then(function(data) { 
+            console.log("ZIP Response: " + data)
+            zipcode = JSON.parse(data).postalCode
             console.log("Getting golden hour for zipcode: " + zipcode)
             const responses = getGoldenHourResponse(zipcode)
-            this.emit(':tell', responses.combinedResponses) 
+            alexaHandler.emit(':tell', responses.combinedResponses) 
             return responses
         })
         .catch(function(err){
             console.log(err);
-            this.emit(':tell', LOCATION_ERROR_MESSAGE)
+            alexaHandler.emit(':tell', LOCATION_ERROR_MESSAGE)
         })
         
     },
