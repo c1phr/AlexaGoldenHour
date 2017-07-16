@@ -11,6 +11,7 @@ const SKILL_NAME = "Golden Hour";
 const GET_FACT_MESSAGE = "Here's your fact: ";
 const PERMISSION_ERROR_MESSAGE = "I'm sorry, I require access to your location to use that functionality. Please allow access to location in the Alexa app."
 const LOCATION_ERROR_MESSAGE = "I'm sorry, I was unable to get your location."
+const SPOKEN_LOCATION_ERROR_MESSAGE = "I'm sorry, I was unable to find that location. Please say a valid US zip code."
 const HELP_MESSAGE = "You can say tell me a space fact, or, you can say exit... What can I help you with?";
 const HELP_REPROMPT = "What can I help you with?";
 const STOP_MESSAGE = "Goodbye!";
@@ -89,10 +90,10 @@ var handlers = {
     },
     'GetGoldenHourForZipIntent': function() {
         var spokenZip = this.event.request.intent.slots.Zipcode.value;
-        console.log("Getting golden hour for spoken zip: " + spokenZip)
-        if (spokenZip === undefined) {
-            spokenZip = zipcode
+        if (!(/(^\d{5}$)/.test(spokenZip))) {
+            this.emit(":tell", SPOKEN_LOCATION_ERROR_MESSAGE)
         }
+        console.log("Getting golden hour for spoken zip: " + spokenZip)
         const responses = getGoldenHourResponse(spokenZip)
         console.log("Responding with: " + responses.combinedResponses)
         this.emit(':tell', responses.combinedResponses)
