@@ -9,6 +9,7 @@ var deviceId = null;
 
 const SKILL_NAME = "Golden Hour";
 const GET_FACT_MESSAGE = "Here's your fact: ";
+const LOCATION_ERROR_MESSAGE = "I'm sorry, I require access to your location to use that functionality. Please allow access to location in the Alexa app."
 const HELP_MESSAGE = "You can say tell me a space fact, or, you can say exit... What can I help you with?";
 const HELP_REPROMPT = "What can I help you with?";
 const STOP_MESSAGE = "Goodbye!";
@@ -67,7 +68,7 @@ var handlers = {
     },
     "GetGoldenHourIntent": function () {
         if (deviceId === null || consentToken === null) {
-            response.tell("I'm sorry, I require access to your location to use that functionality. Please allow access to location in the Alexa app.")
+            this.emit(':tell', LOCATION_ERROR_MESSAGE)
             return
         }
         return getZipcode(deviceId, consentToken).then(function(zipcode) { 
@@ -78,7 +79,7 @@ var handlers = {
         })
         .catch(function(err){
             console.log(err);
-            response.tell("I'm sorry, I require access to your location to use that functionality. Please allow access to location in the Alexa app.")
+            this.emit(':tell', LOCATION_ERROR_MESSAGE)
         })
         
     },
