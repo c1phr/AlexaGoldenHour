@@ -8,11 +8,10 @@ var consentToken = null;
 var deviceId = null;
 
 const SKILL_NAME = "Golden Hour";
-const GET_FACT_MESSAGE = "Here's your fact: ";
 const PERMISSION_ERROR_MESSAGE = "I'm sorry, I require access to your location to use that functionality. Please allow access to location in the Alexa app."
 const LOCATION_ERROR_MESSAGE = "I'm sorry, I was unable to get your location."
 const SPOKEN_LOCATION_ERROR_MESSAGE = "I'm sorry, I was unable to find that location. Please say a valid US zip code."
-const HELP_MESSAGE = "You can say tell me a space fact, or, you can say exit... What can I help you with?";
+const HELP_MESSAGE = "You can ask me when you should take photos, or when the next golden hour is in a particular zip code.";
 const HELP_REPROMPT = "What can I help you with?";
 const STOP_MESSAGE = "Goodbye!";
 
