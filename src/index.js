@@ -23,7 +23,7 @@ var getGoldenHourResponse = function(zipcode) {
     console.log("Getting golden hour responses for " + zipcode)
     const goldenHour = new GoldenHourCalc(zipcode)
     const location = goldenHour.location
-    const locationString = "In " + location + ". "
+    const locationString = "In " + location.city + ", "
     const morning = goldenHour.goldenHourMorning()
     const evening = goldenHour.goldenHourEvening()
     const morningResponse = "The next morning golden hour will start at " + morning.start.format('h:mm a') + " and end at " + morning.end.format('h:mm a') + ". ";
