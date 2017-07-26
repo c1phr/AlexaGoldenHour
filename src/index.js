@@ -56,7 +56,9 @@ exports.handler = function(event, context, callback) {
     if (event.context) {
         if (event.context.System) {
             deviceId = event.context.System.device.deviceId;
-            consentToken = event.context.System.user.permissions.consentToken;
+            if (event.context.System.user.permissions) {
+                consentToken = event.context.System.user.permissions.consentToken
+            }            
         }
     }    
     alexa.APP_ID = APP_ID;
