@@ -21,7 +21,8 @@ var getGoldenHourResponse = function(zipcode) {
     // }
     
     console.log("Getting golden hour responses for " + zipcode)
-    const goldenHour = new GoldenHourCalc(zipcode)
+    
+    const goldenHour = new GoldenHourCalc(zipcode)    
     const location = goldenHour.location
     const locationString = "In " + location.city + ", "
     const morning = goldenHour.goldenHourMorning()
@@ -81,8 +82,13 @@ var handlers = {
             console.log("ZIP Response: " + data)
             zipcode = JSON.parse(data).postalCode
             console.log("Getting golden hour for zipcode: " + zipcode)
-            const responses = getGoldenHourResponse(zipcode)
-            alexaHandler.emit(':tell', responses.combinedResponses) 
+            try {
+                const responses = getGoldenHourResponse(zipcode)
+                alexaHandler.emit(':tell', responses.combinedResponses) 
+            }            
+            catch (err) {
+                alexaHandler.emit(':tell', LOCATION_ERROR_MESSAGE)
+            }         
             return responses
         })
         .catch(function(err){
@@ -97,9 +103,15 @@ var handlers = {
             this.emit(":tell", SPOKEN_LOCATION_ERROR_MESSAGE)
         }
         console.log("Getting golden hour for spoken zip: " + spokenZip)
-        const responses = getGoldenHourResponse(spokenZip)
-        console.log("Responding with: " + responses.combinedResponses)
-        this.emit(':tell', responses.combinedResponses)
+        try {
+            const responses = getGoldenHourResponse(spokenZip)
+            console.log("Responding with: " + responses.combinedResponses)
+            this.emit(':tell', responses.combinedResponses)
+        }
+        catch (err) {
+            console.log("Unable to find zip: " + spokenZip)
+            this.emit(':tell', LOCATION_ERROR_MESSAGE)
+        }
     },
     'AMAZON.HelpIntent': function () {
         var speechOutput = HELP_MESSAGE
