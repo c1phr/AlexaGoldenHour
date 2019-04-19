@@ -1,5 +1,5 @@
 language: node_js
-node_js: '6'
+node_js: '8'
 notifications:
   email: false
 before_script:
@@ -11,7 +11,7 @@ deploy:
   function_name: GoldenHour
   role: arn:aws:iam::856841379672:role/service-role/GoldenHour
   handler_name: handler
-  runtime: nodejs6.10
+  runtime: nodejs8.10
   memory_size: 192
   access_key_id: AKIAJZE2JYA2JDEQBMXQ
   secret_access_key:
